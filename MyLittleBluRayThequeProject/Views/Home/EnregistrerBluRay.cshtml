@@ -1,0 +1,95 @@
+﻿@model IndexViewModel
+
+<h4 style="color:purple">
+    <b>Titre:</b>    @Model?.NewBluRay.Titre <br />
+    <b>Version:</b>  @Model?.NewBluRay.Version <br />
+    @if (@Model.NewBluRay.Acteurs.FirstOrDefault()!=null)
+    {
+        <b>Acteur:</b>  
+        @foreach(var i in @Model.NewBluRay.Acteurs)
+        {
+            <p>
+            @i.Nom
+            </p>
+        }
+        <br />
+    }
+    @if (@Model.NewBluRay.Scenariste != null)
+    {
+        <b>Scénariste:</b>  
+        @Model?.NewBluRay.Scenariste.Nom 
+        <br />
+    }
+    @if (@Model.NewBluRay.Realisateur != null)
+    {
+        <b>Réalisteur:</b>    
+        @Model?.NewBluRay.Realisateur.Nom 
+        <br />
+    }
+    <b>Date:</b>    @Model?.NewBluRay.DateSortie <br />
+
+</h4>
+<hr />
+
+@{
+    ViewData["Title"] = "Enregistrer BluRay Page";
+}
+    
+      <form action="enregistrerBluRay" method="post" >
+        <fieldset>
+          <legend>Enregistrer BluRay</legend>
+          <div>
+            <label for="Titre">Titre :</label>
+            <input type="text" name="Titre" value="" required/>
+          </div>
+          <div>
+            <label for="Version">Version:</label>
+            <input type="text" name="Version" value="" required/>
+          </div>
+         <br />
+          <div>
+            <label for="Acteur">Acteur:</label>
+            <select multiple name="Acteur" required >
+             <option value="" disabled selected>Choisir un acteur</option>
+                @foreach (var item in @Model.Personnes)
+                {
+                    <option value=@item.Id>@item.Nom @item.Prenom</option>
+                }
+            </select>
+          </div>
+     <br />
+     <div>
+            <label for="Scenariste">Scénariste:</label>
+            <select name="Scenariste" required>
+           <option value="" disabled selected>Choisir un scénariste</option>
+                @foreach (var item in @Model.Personnes)
+                {
+                    <option value=@item.Id>@item.Nom @item.Prenom</option>
+                }
+            </select>
+          </div>
+     <br/>
+     <div>
+            <label for="Realisateur">Réalisateur:</label>
+            <select name="Realisateur" required>
+           <option value="" disabled selected>Choisir un réalisteur</option>
+                @foreach (var item in @Model.Personnes)
+                {
+                    <option value=@item.Id>@item.Nom @item.Prenom</option>
+                }
+            </select>
+          </div>
+     <br />
+         <div>
+               <label for="Date">Date de sortie:</label>
+               <input type="date"  name="Date" value = "" required>
+        </div>
+        <br />
+          <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+          </div>
+
+           
+        </fieldset>
+      </form>

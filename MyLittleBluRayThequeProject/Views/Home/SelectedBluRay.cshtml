@@ -8,13 +8,12 @@
 }
 <div class="text-center">
     <div>
-    titre : @Model.SelectedBluRay.Titre
+    Titre : @Model.SelectedBluRay.Titre
     </div>
-    <div>
-        Acteurs : @foreach (var act in Model.SelectedBluRay.Acteurs)
+    <div class="info-acteur">
+        <h1>Acteurs : </h1>@foreach (var act in Model.SelectedBluRay.Acteurs)
         {
-            <div>nom :  @act.Nom</div>
-            <div>prenom :  @act.Prenom</div>
+                <p>nom :  @act.Nom prenom :  @act.Prenom</p>
         }
     </div>
     <div>
