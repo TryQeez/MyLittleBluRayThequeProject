@@ -24,11 +24,17 @@ namespace MyLittleBluRayThequeProject.Controllers
             return View(model);
         }
 
+        public ActionResult PrintMessageToConsole()
+        {
+            Console.WriteLine("Test");
+            return View("Index");
+        }
+
         public IActionResult SelectedBluRay([FromRoute]long idBr)
         {
             IndexViewModel model = new IndexViewModel();
             model.BluRays = brRepository.GetListeBluRay();
-            model.SelectedBluRay = model.BluRays.FirstOrDefault(x => x.Id == idBr);
+            model.SelectedBluRay = brRepository.GetBluRay(idBr);
             return View(model);
         }
 
