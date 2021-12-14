@@ -72,7 +72,23 @@ namespace MyLittleBluRayThequeProject.Controllers
 
             return View(model);
         }
-       
+
+        public IActionResult EnregistrerPersonne(string nom, string prenom, DateTime dateNaissance, string nationalite)
+        {
+            DTOs.Personne personne = new DTOs.Personne
+                    {
+                        Nom = nom,
+                        Prenom = prenom,
+                        Nationalite = nationalite,
+                        DateNaissance = dateNaissance
+                    };
+            if (nom != null)
+            {
+                personneRepository.enregistrerPersonne(personne);
+            }
+            return View();
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

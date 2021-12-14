@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewData["Title"] = "Enregistrer Personne Page";
+}
+
+<form action="EnregistrerPersonne" method="post" >
+        <fieldset>
+          <legend>Enregistrer Personne</legend>
+          <div>
+            <label for="Nom">Nom :</label>
+            <input type="text" name="Nom" value="" required/>
+          </div>
+          <div>
+            <label for="Prenom">Prenom:</label>
+            <input type="text" name="Prenom" value="" required/>
+          </div>
+     <br/>
+          <div>
+            <label for="Nationalite">Nationalité :</label>
+            <input type="text" name="Nationalite" value="" required/>
+          </div>
+      <br/>
+          <div>
+            <label for="DateNaissance">Date Naissance :</label>
+            <input type="date"  name="Date" value = "" required>
+          </div>
+   
+     
+          <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+          </div>
+
+           
+        </fieldset>
+      </form>
