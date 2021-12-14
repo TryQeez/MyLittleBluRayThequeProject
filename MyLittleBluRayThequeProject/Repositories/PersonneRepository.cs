@@ -52,18 +52,28 @@ namespace MyLittleBluRayThequeProject.Repositories
         public void enregistrerPersonne(Personne personne)
         {
             NpgsqlConnection conn = null;
-            try { 
+            try
+            {
                 conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
                 conn.Open();
 
                 NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"Personne\" (\"Nom\",\"Prenom\",\"Nationalite\",\"DateNaissance\") " +
-                    "VALUES (@nom, @prenom, @nationalite, @dateNaissance);", 
+                    "VALUES (@nom, @prenom, @nationalite, @dateNaissance);",
                     conn);
                 sendNewUserCommand.Parameters.AddWithValue("nom", personne.Nom);
                 sendNewUserCommand.Parameters.AddWithValue("prenom", personne.Prenom);
                 sendNewUserCommand.Parameters.AddWithValue("nationalite", personne.Nationalite);
                 sendNewUserCommand.Parameters.AddWithValue("dateNaissance", personne.DateNaissance);
-               
+                sendNewUserCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+        }
 
         public static List<Personne> GetActeurs(long idBr)
         {
