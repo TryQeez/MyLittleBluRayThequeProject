@@ -11,10 +11,13 @@ namespace MyLittleBluRayThequeProject.Controllers
 
         private readonly BluRayRepository brRepository;
 
+        private readonly PersonneRepository personneRepository;
+
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
             brRepository = new BluRayRepository();
+            personneRepository = new PersonneRepository();
         }
 
         public IActionResult Index()
@@ -32,10 +35,38 @@ namespace MyLittleBluRayThequeProject.Controllers
             return View(model);
         }
 
-        public IActionResult Privacy()
+
+        public IActionResult EnregistrerBluRay(string titre, string version, List<int> acteur, int realisateur, int scenariste, DateTime date)
         {
-            return View();
+            IndexViewModel model = new IndexViewModel();
+            List<DTOs.Personne> acteurList = new List<DTOs.Personne>();
+            DTOs.Personne realisateurPersonne = null;
+            DTOs.Personne scenaristePersonne = null;
+            Console.WriteLine(acteur);
+            model.Personnes = personneRepository.GetListePersonne();
+            foreach(var i in acteur)
+            {
+                acteurList.Add(model.Personnes[i]);
+            }
+            if (realisateur != null)
+            {
+                realisateurPersonne = model.Personnes[realisateur];
+                scenaristePersonne = model.Personnes[scenariste];
+            }
+            
+            model.NewBluRay = new DTOs.BluRay
+            {   
+                Titre = titre,
+                Version = version,
+                Acteurs = acteurList,
+                Realisateur = realisateurPersonne,
+                Scenariste = scenaristePersonne,
+                DateSortie = date
+            };
+
+            return View(model);
         }
+       
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
