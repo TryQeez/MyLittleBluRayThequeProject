@@ -22,25 +22,25 @@
           </tr>
         </thead>
         <tbody>
-                    @{int i = 0;}
-                    @foreach(var br in Model?.BluRays)
-                    {
+            @{int i = 0;}
+            @foreach (var br in Model?.BluRays)
+            {
 
-                        <tr>
-                            <th scope="row">@i</th>
-                            <td>@br.Titre</td>
-                            <td>@br.DateSortie</td>
-                            <td>@br.Scenariste.Nom</td>
-                            <td>@br.Realisateur.Nom</td>
-                            <td>@br.Version</td>
-                            <td>
-                                <i class=""></i>
-                                <button type="button" class="btn btn-success"><i class="fas fa-shopping-basket"></i></button>
-                                <button type="button" class="btn btn-danger" onclick="location.href='<%: Url.Action("DeleteBluRay", "Home") %>'"><i class="far fa-trash-alt"></i></button>
-                            </td>
-                            @{ i++; }
-                        </tr>
-                    }
+                <tr>
+                    <th scope="row">@i</th>
+                    <td>@br.Titre</td>
+                    <td>@br.DateSortie</td>
+                    <td>@br.Scenariste.Nom</td>
+                    <td>@br.Realisateur.Nom</td>
+                    <td>@br.Version</td>
+                    <td>
+                        <i class=""></i>
+                        <button type="button" class="btn btn-success"><i class="fas fa-shopping-basket"></i></button>
+                        <button type="button" class="btn btn-danger" onclick="location.href=''"><i class="far fa-trash-alt"></i></button>
+                    </td>
+                    @{ i++; }
+                </tr>
+            }
         </tbody>
       </table>
     </div>
