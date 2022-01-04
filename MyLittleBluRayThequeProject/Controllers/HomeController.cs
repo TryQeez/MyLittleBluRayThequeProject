@@ -42,34 +42,36 @@ namespace MyLittleBluRayThequeProject.Controllers
         }
 
 
-        public IActionResult EnregistrerBluRay(string titre, string version, List<int> acteur, int realisateur, int scenariste, DateTime date)
+        public IActionResult EnregistrerBluRay(string titre, string version, List<int> acteur, int realisateur, int scenariste, DateTime date, int duree)
         {
             IndexViewModel model = new IndexViewModel();
             List<DTOs.Personne> acteurList = new List<DTOs.Personne>();
             DTOs.Personne realisateurPersonne = null;
             DTOs.Personne scenaristePersonne = null;
-            Console.WriteLine(acteur);
             model.Personnes = personneRepository.GetListePersonne();
-            foreach(var i in acteur)
-            {
-                acteurList.Add(model.Personnes[i]);
-            }
-            if (realisateur != null)
-            {
-                realisateurPersonne = model.Personnes[realisateur];
-                scenaristePersonne = model.Personnes[scenariste];
-            }
-            
-            model.NewBluRay = new DTOs.BluRay
-            {   
-                Titre = titre,
-                Version = version,
-                Acteurs = acteurList,
-                Realisateur = realisateurPersonne,
-                Scenariste = scenaristePersonne,
-                DateSortie = date
-            };
+            int idNewBluRay = brRepository.GetListeBluRay().Count();
 
+
+            if (titre != null)
+            {
+                DTOs.BluRay bluRay = new DTOs.BluRay
+                {
+                    Id = idNewBluRay,
+                    Titre = titre,
+                    Version = version,
+                    DateSortie = date,
+                    Duree = TimeSpan.FromMinutes(duree)
+
+                };
+                brRepository.enregistrerBluRay(bluRay);
+                foreach (var i in acteur)
+                {
+                    personneRepository.enregistrerActeur(i, idNewBluRay);
+                }
+                personneRepository.enregistrerScenariste(scenariste, idNewBluRay);
+                personneRepository.enregistrerRealisateur(realisateur, idNewBluRay);
+
+            }
             return View(model);
         }
 

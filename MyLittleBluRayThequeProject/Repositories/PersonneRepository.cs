@@ -46,6 +46,46 @@ namespace MyLittleBluRayThequeProject.Repositories
             }
             return result;
         }
+        public Personne GetPersonneById(long id)
+        {
+            NpgsqlConnection conn = null;
+            Personne result = new Personne();
+            try
+            {
+                // Connect to a PostgreSQL database
+                conn = new NpgsqlConnection(PersonneRepository.ConnectionString);
+                conn.Open();
+
+                // Define a query returning a single row result set
+                NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM \"BluRayTheque\".\"Personne\" WHERE \"BluRayTheque\".\"Personne\".\"Id\" = @idPersonne", conn);
+                command.Parameters.AddWithValue("idPersonne", id);
+                
+
+
+                // Execute the query and obtain a result set
+                NpgsqlDataReader dr = command.ExecuteReader();
+
+                // Output rows
+                while (dr.Read())
+                    result = new Personne
+                    {
+                        Id = long.Parse(dr[0].ToString()),
+                        Nom = dr[1].ToString(),
+                        Prenom = dr[2].ToString(),
+                        Nationalite = dr[4].ToString(),
+                        DateNaissance = dr.GetDateTime(3)
+                    };
+
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+            return result;
+        }
 
 
 
@@ -58,8 +98,7 @@ namespace MyLittleBluRayThequeProject.Repositories
                 conn.Open();
 
                 NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"Personne\" (\"Nom\",\"Prenom\",\"Nationalite\",\"DateNaissance\") " +
-                    "VALUES (@nom, @prenom, @nationalite, @dateNaissance);",
-                    conn);
+                    "VALUES (@nom, @prenom, @nationalite, @dateNaissance);", conn);
                 sendNewUserCommand.Parameters.AddWithValue("nom", personne.Nom);
                 sendNewUserCommand.Parameters.AddWithValue("prenom", personne.Prenom);
                 sendNewUserCommand.Parameters.AddWithValue("nationalite", personne.Nationalite);
@@ -73,6 +112,78 @@ namespace MyLittleBluRayThequeProject.Repositories
                     conn.Close();
                 }
             }
+        }
+
+        public void enregistrerScenariste(long idScenariste, long idBluRay)
+        {
+            NpgsqlConnection conn = null;
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"Scenariste\" (\"IdScenariste\",\"IdBluRay\") " +
+                    "VALUES (@idScenariste, @idBluRay);", conn);
+                sendNewUserCommand.Parameters.AddWithValue("idScenariste", idScenariste);
+                sendNewUserCommand.Parameters.AddWithValue("idBluRay", idBluRay);
+                sendNewUserCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+
+        }
+
+        public void enregistrerRealisateur(long idRealisateur, long idBluRay)
+        {
+            NpgsqlConnection conn = null;
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"Realisateur\" (\"IdRealisateur\",\"IdBluRay\") " +
+                    "VALUES (@idRealisateur, @idBluRay);", conn);
+                sendNewUserCommand.Parameters.AddWithValue("idRealisateur", idRealisateur);
+                sendNewUserCommand.Parameters.AddWithValue("idBluRay", idBluRay);
+                sendNewUserCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+
+        }
+
+        public void enregistrerActeur(long idActeur, long idBluRay)
+        {
+            NpgsqlConnection conn = null;
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"Acteur\" (\"IdActeur\",\"IdBluRay\") " +
+                    "VALUES (@idActeur, @idBluRay);", conn);
+                sendNewUserCommand.Parameters.AddWithValue("idActeur", idActeur);
+                sendNewUserCommand.Parameters.AddWithValue("idBluRay", idBluRay);
+                sendNewUserCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+
         }
 
         public static List<Personne> GetActeurs(long idBr)

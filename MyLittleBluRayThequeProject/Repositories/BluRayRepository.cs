@@ -37,7 +37,7 @@ namespace MyLittleBluRayThequeProject.Repositories
                     bluRay.Scenariste = PersonneRepository.GetScenariste(bluRay.Id);
                     bluRay.Realisateur = PersonneRepository.GetRealisateur(bluRay.Id);
                     bluRay.Titre = dr[1].ToString();
-                    bluRay.Duree = TimeSpan.FromSeconds(long.Parse(dr[2].ToString()));
+                    bluRay.Duree = TimeSpan.FromMinutes(long.Parse(dr[2].ToString()));
                     bluRay.Version = dr[3].ToString();
                     allBluRays.Add(bluRay);
 
@@ -84,8 +84,11 @@ namespace MyLittleBluRayThequeProject.Repositories
                     {
                         Id = long.Parse(dr[0].ToString()),
                         Titre = dr[1].ToString(),
-                        Duree = TimeSpan.FromSeconds(long.Parse(dr[2].ToString())),
-                        Version = dr[3].ToString()
+                        Duree = TimeSpan.FromMinutes(long.Parse(dr[2].ToString())),
+                        Acteurs = PersonneRepository.GetActeurs(Id),
+                        Scenariste = PersonneRepository.GetScenariste(Id),
+                        Realisateur = PersonneRepository.GetRealisateur(Id),
+                Version = dr[3].ToString()
                     });
 
                 result = qryResult.SingleOrDefault();
@@ -99,6 +102,31 @@ namespace MyLittleBluRayThequeProject.Repositories
                 }
             }
             return result;
+        }
+        public void enregistrerBluRay(BluRay bluRay)
+        {
+            NpgsqlConnection conn = null;
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"BluRay\" (\"Id\",\"Titre\",\"DateSortie\",\"Version\",\"Duree\") " +
+                    "VALUES (@id, @titre, @dateSortie, @version, @duree);", conn);
+                sendNewUserCommand.Parameters.AddWithValue("id", bluRay.Id);
+                sendNewUserCommand.Parameters.AddWithValue("titre", bluRay.Titre);
+                sendNewUserCommand.Parameters.AddWithValue("dateSortie", bluRay.DateSortie);
+                sendNewUserCommand.Parameters.AddWithValue("version", bluRay.Version);
+                sendNewUserCommand.Parameters.AddWithValue("duree", (int) bluRay.Duree.TotalMinutes);
+                sendNewUserCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
         }
     }
 }
