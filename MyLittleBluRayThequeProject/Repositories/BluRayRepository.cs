@@ -111,8 +111,8 @@ namespace MyLittleBluRayThequeProject.Repositories
                 conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
                 conn.Open();
 
-                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"BluRay\" (\"Id\",\"Titre\",\"DateSortie\",\"Version\",\"Duree\") " +
-                    "VALUES (@id, @titre, @dateSortie, @version, @duree);", conn);
+                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"BluRay\" (\"Id\",\"Titre\",\"DateSortie\",\"Version\",\"Duree\", \"Disponible\") " +
+                    "VALUES (@id, @titre, @dateSortie, @version, @duree, True);", conn);
                 sendNewUserCommand.Parameters.AddWithValue("id", bluRay.Id);
                 sendNewUserCommand.Parameters.AddWithValue("titre", bluRay.Titre);
                 sendNewUserCommand.Parameters.AddWithValue("dateSortie", bluRay.DateSortie);

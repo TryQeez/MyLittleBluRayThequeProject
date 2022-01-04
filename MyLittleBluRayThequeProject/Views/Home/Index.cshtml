@@ -27,8 +27,8 @@
             {
 
                 <tr>
-                    <th scope="row">@i</th>
-                    <td>@br.Titre</td>
+                    <th scope="row"><a asp-area="" asp-controller="Home" asp-action="SelectedBluRay" asp-route-id="@i"> @i </a></th>
+                    <td><a asp-area="" asp-controller="Home" asp-action="SelectedBluRay" asp-route-id="@i">@br.Titre</a></td>
                     <td>@br.DateSortie</td>
                     <td>@br.Scenariste.Nom</td>
                     <td>@br.Realisateur.Nom</td>
