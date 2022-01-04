@@ -85,6 +85,9 @@ namespace MyLittleBluRayThequeProject.Repositories
                         Id = long.Parse(dr[0].ToString()),
                         Titre = dr[1].ToString(),
                         Duree = TimeSpan.FromSeconds(long.Parse(dr[2].ToString())),
+                        Acteurs = PersonneRepository.GetActeurs(Id),
+                        Scenariste = PersonneRepository.GetScenariste(Id),
+                        Realisateur = PersonneRepository.GetRealisateur(Id),
                         Version = dr[3].ToString()
                     });
 
