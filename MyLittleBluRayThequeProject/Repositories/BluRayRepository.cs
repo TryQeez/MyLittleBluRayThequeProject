@@ -31,14 +31,16 @@ namespace MyLittleBluRayThequeProject.Repositories
 
                 while(dr.Read())
                 {
+
                     BluRay bluRay = new BluRay();
                     bluRay.Id = long.Parse(dr[0].ToString());
                     bluRay.Acteurs = PersonneRepository.GetActeurs(bluRay.Id);
+                    bluRay.DateSortie = DateTime.Parse(dr[3].ToString());
                     bluRay.Scenariste = PersonneRepository.GetScenariste(bluRay.Id);
                     bluRay.Realisateur = PersonneRepository.GetRealisateur(bluRay.Id);
                     bluRay.Titre = dr[1].ToString();
                     bluRay.Duree = TimeSpan.FromMinutes(long.Parse(dr[2].ToString()));
-                    bluRay.Version = dr[3].ToString();
+                    bluRay.Version = dr[4].ToString();
                     allBluRays.Add(bluRay);
 
                 }
@@ -72,7 +74,7 @@ namespace MyLittleBluRayThequeProject.Repositories
                 conn.Open();
 
                 // Define a query returning a single row result set
-                NpgsqlCommand command = new NpgsqlCommand("SELECT \"Id\", \"Titre\", \"Duree\", \"Version\" FROM \"BluRayTheque\".\"BluRay\" where \"Id\" = @p", conn);
+                NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM \"BluRayTheque\".\"BluRay\" where \"Id\" = @p", conn);
                 command.Parameters.AddWithValue("p", Id);
 
                 // Execute the query and obtain a result set
@@ -80,19 +82,20 @@ namespace MyLittleBluRayThequeProject.Repositories
 
                 // Output rows
                 while (dr.Read())
-                    qryResult.Add(new BluRay
-                    {
-                        Id = long.Parse(dr[0].ToString()),
-                        Titre = dr[1].ToString(),
-                        Duree = TimeSpan.FromMinutes(long.Parse(dr[2].ToString())),
-                        Acteurs = PersonneRepository.GetActeurs(Id),
-                        Scenariste = PersonneRepository.GetScenariste(Id),
-                        Realisateur = PersonneRepository.GetRealisateur(Id),
-                Version = dr[3].ToString()
-                    });
+                {
+                    BluRay bluRay = new BluRay();
+                    bluRay.Id = long.Parse(dr[0].ToString());
+                    bluRay.Acteurs = PersonneRepository.GetActeurs(bluRay.Id);
+                    bluRay.DateSortie = DateTime.Parse(dr[3].ToString());
+                    bluRay.Scenariste = PersonneRepository.GetScenariste(bluRay.Id);
+                    bluRay.Realisateur = PersonneRepository.GetRealisateur(bluRay.Id);
+                    bluRay.Titre = dr[1].ToString();
+                    bluRay.Duree = TimeSpan.FromMinutes(long.Parse(dr[2].ToString()));
+                    bluRay.Version = dr[3].ToString();
+                    qryResult.Add(bluRay);
+                }
 
                 result = qryResult.SingleOrDefault();
-
             }
             finally
             {

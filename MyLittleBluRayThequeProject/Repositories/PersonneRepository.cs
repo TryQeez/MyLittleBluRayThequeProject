@@ -217,7 +217,7 @@ namespace MyLittleBluRayThequeProject.Repositories
             {
                 if (conn != null)
                 {
-                    tran.Commit();
+                  //  tran.Commit();
                     conn.Close();
                 }
             }

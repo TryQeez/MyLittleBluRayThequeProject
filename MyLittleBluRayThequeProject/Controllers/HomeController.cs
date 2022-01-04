@@ -2,6 +2,8 @@
 using MyLittleBluRayThequeProject.Models;
 using MyLittleBluRayThequeProject.Business;
 using MyLittleBluRayThequeProject.Repositories;
+using System.Web;
+
 using System.Diagnostics;
 
 namespace MyLittleBluRayThequeProject.Controllers
@@ -49,7 +51,6 @@ namespace MyLittleBluRayThequeProject.Controllers
             return View(model);
         }
 
-
         public IActionResult EnregistrerBluRay(string titre, string version, List<int> acteur, int realisateur, int scenariste, DateTime date, int duree)
         {
             IndexViewModel model = new IndexViewModel();
@@ -58,7 +59,6 @@ namespace MyLittleBluRayThequeProject.Controllers
             DTOs.Personne scenaristePersonne = null;
             model.Personnes = personneRepository.GetListePersonne();
             int idNewBluRay = brRepository.GetListeBluRay().Count();
-
 
             if (titre != null)
             {
@@ -69,7 +69,6 @@ namespace MyLittleBluRayThequeProject.Controllers
                     Version = version,
                     DateSortie = date,
                     Duree = TimeSpan.FromMinutes(duree)
-
                 };
                 brRepository.enregistrerBluRay(bluRay);
                 foreach (var i in acteur)
