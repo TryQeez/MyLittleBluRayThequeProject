@@ -85,13 +85,10 @@ namespace MyLittleBluRayThequeProject.Repositories
                 {
                     BluRay bluRay = new BluRay();
                     bluRay.Id = long.Parse(dr[0].ToString());
-                    bluRay.Acteurs = PersonneRepository.GetActeurs(bluRay.Id);
                     bluRay.DateSortie = DateTime.Parse(dr[3].ToString());
-                    bluRay.Scenariste = PersonneRepository.GetScenariste(bluRay.Id);
-                    bluRay.Realisateur = PersonneRepository.GetRealisateur(bluRay.Id);
                     bluRay.Titre = dr[1].ToString();
                     bluRay.Duree = TimeSpan.FromMinutes(long.Parse(dr[2].ToString()));
-                    bluRay.Version = dr[3].ToString();
+                    bluRay.Version = dr[4].ToString();
                     qryResult.Add(bluRay);
                 }
 
