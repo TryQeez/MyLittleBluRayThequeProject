@@ -25,7 +25,6 @@
             @{int i = 0;}
             @foreach (var br in Model?.BluRays)
             {
-
                 <tr>
                     <th scope="row"><a asp-area="" asp-controller="Home" asp-action="SelectedBluRay" asp-route-id="@i"> @i </a></th>
                     <td><a asp-area="" asp-controller="Home" asp-action="SelectedBluRay" asp-route-id="@i">@br.Titre</a></td>
