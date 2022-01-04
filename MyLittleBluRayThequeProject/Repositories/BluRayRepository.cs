@@ -55,6 +55,37 @@ namespace MyLittleBluRayThequeProject.Repositories
 
             return allBluRays;
         }
+
+        public void SetBluRayEmprunte(long id)
+        {
+            NpgsqlConnection conn = null;
+            BluRay br = GetBluRay(id);
+            Console.WriteLine(br.Disponible);
+            Console.WriteLine(br.Emprunt);
+            Console.WriteLine(br == null);
+            if(br == null || br.Disponible == false || br.Emprunt == true)
+            {
+
+                return;
+            }
+
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand command = new NpgsqlCommand("UPDATE \"BluRayTheque\".\"BluRay\" SET \"Emprunt\" = True, \"Disponible\" = False WHERE \"Id\" = @p", conn);
+                command.Parameters.AddWithValue("p", id);
+
+                command.ExecuteNonQuery();
+            } finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+        }
         
 
         /// <summary>
@@ -85,13 +116,12 @@ namespace MyLittleBluRayThequeProject.Repositories
                 {
                     BluRay bluRay = new BluRay();
                     bluRay.Id = long.Parse(dr[0].ToString());
-                    bluRay.Acteurs = PersonneRepository.GetActeurs(bluRay.Id);
                     bluRay.DateSortie = DateTime.Parse(dr[3].ToString());
-                    bluRay.Scenariste = PersonneRepository.GetScenariste(bluRay.Id);
-                    bluRay.Realisateur = PersonneRepository.GetRealisateur(bluRay.Id);
                     bluRay.Titre = dr[1].ToString();
                     bluRay.Duree = TimeSpan.FromMinutes(long.Parse(dr[2].ToString()));
-                    bluRay.Version = dr[3].ToString();
+                    bluRay.Version = dr[4].ToString();
+                    bluRay.Disponible = Boolean.Parse(dr[7].ToString());
+                    bluRay.Emprunt = Boolean.Parse(dr[5].ToString());
                     qryResult.Add(bluRay);
                 }
 
