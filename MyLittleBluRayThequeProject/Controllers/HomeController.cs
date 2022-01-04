@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyLittleBluRayThequeProject.Models;
+using MyLittleBluRayThequeProject.Business;
 using MyLittleBluRayThequeProject.Repositories;
 using System.Diagnostics;
 
@@ -13,17 +14,24 @@ namespace MyLittleBluRayThequeProject.Controllers
 
         private readonly PersonneRepository personneRepository;
 
+        private readonly BluRayBusiness brBusiness;
+
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
             brRepository = new BluRayRepository();
             personneRepository = new PersonneRepository();
+            brBusiness = new BluRayBusiness();
         }
 
-        public IActionResult Index()
+        public IActionResult Index(long? id)
         {
             IndexViewModel model = new IndexViewModel();
             model.BluRays = brRepository.GetListeBluRay();
+            if (id != null)
+            {
+                model.SelectedBluRay = brBusiness.GetBluRay(id.Value);
+            }
             return View(model);
         }
 

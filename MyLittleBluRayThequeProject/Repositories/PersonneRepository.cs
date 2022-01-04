@@ -1,5 +1,7 @@
 ﻿using MyLittleBluRayThequeProject.DTOs;
 using Npgsql;
+using System.Data;
+
 namespace MyLittleBluRayThequeProject.Repositories
 {
     public class PersonneRepository
@@ -215,6 +217,7 @@ namespace MyLittleBluRayThequeProject.Repositories
             {
                 if (conn != null)
                 {
+                    tran.Commit();
                     conn.Close();
                 }
             }
