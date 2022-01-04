@@ -19,13 +19,17 @@ namespace MyLittleBluRayThequeProject.Models
         /// </summary>
         public string Version { get; set; }
 
+        public DateTime DateSortie { get; set; }
+
+        public bool Disponible { get; set; }
+
         public static InfoBluRayApiViewModel ToModel(BluRay dto)
         {
             if (dto == null)
             {
                 return null;
             }
-            return new InfoBluRayApiViewModel { Id = dto.Id, Titre = dto.Titre, Version = dto.Version };
+            return new InfoBluRayApiViewModel { Id = dto.Id, Titre = dto.Titre, DateSortie = dto.DateSortie, Version = dto.Version, Disponible = dto.Disponible };
         }
     }
 }

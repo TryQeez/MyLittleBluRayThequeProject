@@ -29,10 +29,24 @@ namespace MyLittleBluRayThequeProject.Controllers
         [HttpGet("/blurays/{id}")]
         public ObjectResult GetSpe(long id)
         {
-            List<BluRay> br = new List<BluRay> { _brRepository.GetBluRay(id) };
+            BluRay bluRay = _brRepository.GetBluRay(id);
+            bluRay.Realisateur = PersonneRepository.GetRealisateur(id);
+            bluRay.Scenariste = PersonneRepository.GetScenariste(id);
+            bluRay.Acteurs = PersonneRepository.GetActeurs(id);
+            List<BluRay> br = new List<BluRay> { bluRay };
             List<InfoBluRayApiViewModel> infoBr = br.ConvertAll(InfoBluRayApiViewModel.ToModel);
             InfoBluRayApiViewModel targetBr = infoBr[0];
             return new OkObjectResult(targetBr);
+        }
+
+        [HttpPost("/blurays/{idBluray}/emprunt")]
+        public ObjectResult EmprunterBluRay(long idBluray)
+        {
+            // Vérifier que le livre existe, qu'il est disponible et qu'il n'est pas emprunté
+            _brRepository.SetBluRayEmprunte(idBluray);
+
+            // Passer le livre en emprunté = true et disponible = false
+            return new CreatedResult($"{idBluray}", null);
         }
     }
 }
