@@ -43,10 +43,12 @@ namespace MyLittleBluRayThequeProject.Controllers
             return View("Index");
         }
 
-        public IActionResult SelectedBluRay([FromRoute]long idBr)
+        public IActionResult SelectedBluRay()
         {
+            string url = Request.Path;
+            string[] urlSplit = url.Split('/');
+            int idBr = int.Parse(urlSplit[urlSplit.Length - 1]);
             IndexViewModel model = new IndexViewModel();
-            model.BluRays = brRepository.GetListeBluRay();
             model.SelectedBluRay = brRepository.GetBluRay(idBr);
             return View(model);
         }
