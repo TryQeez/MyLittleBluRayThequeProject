@@ -1,35 +1,7 @@
 ﻿@model IndexViewModel
 
-<h4 style="color:purple">
-    <b>Titre:</b>    @Model?.NewBluRay.Titre <br />
-    <b>Version:</b>  @Model?.NewBluRay.Version <br />
-    @if (@Model.NewBluRay.Acteurs.FirstOrDefault()!=null)
-    {
-        <b>Acteur:</b>  
-        @foreach(var i in @Model.NewBluRay.Acteurs)
-        {
-            <p>
-            @i.Nom
-            </p>
-        }
-        <br />
-    }
-    @if (@Model.NewBluRay.Scenariste != null)
-    {
-        <b>Scénariste:</b>  
-        @Model?.NewBluRay.Scenariste.Nom 
-        <br />
-    }
-    @if (@Model.NewBluRay.Realisateur != null)
-    {
-        <b>Réalisteur:</b>    
-        @Model?.NewBluRay.Realisateur.Nom 
-        <br />
-    }
-    <b>Date:</b>    @Model?.NewBluRay.DateSortie <br />
 
-</h4>
-<hr />
+
 
 @{
     ViewData["Title"] = "Enregistrer BluRay Page";
@@ -45,6 +17,11 @@
           <div>
             <label for="Version">Version:</label>
             <input type="text" name="Version" value="" required/>
+          </div>
+         <br />
+         <div>
+            <label for="Duree">Durée (minutes):</label>
+            <input type="number" name="Duree" value="" required/>
           </div>
          <br />
           <div>

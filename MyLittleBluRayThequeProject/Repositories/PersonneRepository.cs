@@ -48,6 +48,46 @@ namespace MyLittleBluRayThequeProject.Repositories
             }
             return result;
         }
+        public Personne GetPersonneById(long id)
+        {
+            NpgsqlConnection conn = null;
+            Personne result = new Personne();
+            try
+            {
+                // Connect to a PostgreSQL database
+                conn = new NpgsqlConnection(PersonneRepository.ConnectionString);
+                conn.Open();
+
+                // Define a query returning a single row result set
+                NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM \"BluRayTheque\".\"Personne\" WHERE \"BluRayTheque\".\"Personne\".\"Id\" = @idPersonne", conn);
+                command.Parameters.AddWithValue("idPersonne", id);
+                
+
+
+                // Execute the query and obtain a result set
+                NpgsqlDataReader dr = command.ExecuteReader();
+
+                // Output rows
+                while (dr.Read())
+                    result = new Personne
+                    {
+                        Id = long.Parse(dr[0].ToString()),
+                        Nom = dr[1].ToString(),
+                        Prenom = dr[2].ToString(),
+                        Nationalite = dr[4].ToString(),
+                        DateNaissance = dr.GetDateTime(3)
+                    };
+
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+            return result;
+        }
 
 
 
@@ -60,8 +100,7 @@ namespace MyLittleBluRayThequeProject.Repositories
                 conn.Open();
 
                 NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"Personne\" (\"Nom\",\"Prenom\",\"Nationalite\",\"DateNaissance\") " +
-                    "VALUES (@nom, @prenom, @nationalite, @dateNaissance);",
-                    conn);
+                    "VALUES (@nom, @prenom, @nationalite, @dateNaissance);", conn);
                 sendNewUserCommand.Parameters.AddWithValue("nom", personne.Nom);
                 sendNewUserCommand.Parameters.AddWithValue("prenom", personne.Prenom);
                 sendNewUserCommand.Parameters.AddWithValue("nationalite", personne.Nationalite);
@@ -77,58 +116,76 @@ namespace MyLittleBluRayThequeProject.Repositories
             }
         }
 
-        public Personne GetRealisateurBr(long idBr)
+        public void enregistrerScenariste(long idScenariste, long idBluRay)
         {
-
             NpgsqlConnection conn = null;
-            Personne personne = null;
-            NpgsqlTransaction tran = null;
             try
             {
-
-                List<Personne> qryResult = new List<Personne>();
-                // Connect to a PostgreSQL database
-                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=49rkpFl0;Database=postgres;");
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
                 conn.Open();
-                tran = conn.BeginTransaction();
-                using (var cmd = new NpgsqlCommand("select \"BluRayTheque\".\"GetRealisateurByBRId\"(@brid, @cur)", conn))
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("brid", idBr);
-                    cmd.Parameters.Add(new NpgsqlParameter("@cur", NpgsqlTypes.NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "cur" });
 
-                    cmd.ExecuteNonQuery();
-
-                    cmd.CommandText = "fetch all in \"cur\"";
-                    cmd.CommandType = CommandType.Text;
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-
-                        // Output rows
-                        while (reader.Read())
-                            qryResult.Add(new Personne
-                            {
-                                Id = reader.GetInt32(0),
-                                Nom = reader.GetString(1),
-                                Prenom = reader.GetString(2),
-                                DateNaissance = reader.GetDateTime(3),
-                                Nationalite = reader.GetString(4),
-                            });
-                    }
-                }
-
-                personne = qryResult.SingleOrDefault();
+                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"Scenariste\" (\"IdScenariste\",\"IdBluRay\") " +
+                    "VALUES (@idScenariste, @idBluRay);", conn);
+                sendNewUserCommand.Parameters.AddWithValue("idScenariste", idScenariste);
+                sendNewUserCommand.Parameters.AddWithValue("idBluRay", idBluRay);
+                sendNewUserCommand.ExecuteNonQuery();
             }
             finally
             {
                 if (conn != null)
                 {
-                    tran.Commit();
                     conn.Close();
                 }
             }
-            return personne;
+
+        }
+
+        public void enregistrerRealisateur(long idRealisateur, long idBluRay)
+        {
+            NpgsqlConnection conn = null;
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"Realisateur\" (\"IdRealisateur\",\"IdBluRay\") " +
+                    "VALUES (@idRealisateur, @idBluRay);", conn);
+                sendNewUserCommand.Parameters.AddWithValue("idRealisateur", idRealisateur);
+                sendNewUserCommand.Parameters.AddWithValue("idBluRay", idBluRay);
+                sendNewUserCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+
+        }
+
+        public void enregistrerActeur(long idActeur, long idBluRay)
+        {
+            NpgsqlConnection conn = null;
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("INSERT INTO \"BluRayTheque\".\"Acteur\" (\"IdActeur\",\"IdBluRay\") " +
+                    "VALUES (@idActeur, @idBluRay);", conn);
+                sendNewUserCommand.Parameters.AddWithValue("idActeur", idActeur);
+                sendNewUserCommand.Parameters.AddWithValue("idBluRay", idBluRay);
+                sendNewUserCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+
         }
 
         public static List<Personne> GetActeurs(long idBr)
@@ -157,54 +214,6 @@ namespace MyLittleBluRayThequeProject.Repositories
                     acteurs.Add(acteur);
                 }
             } finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-            }
-            return acteurs;
-        }
-
-        public List<Personne> GetActeursBr(long idBr)
-        {
-            NpgsqlConnection conn = null;
-            List<Personne> acteurs = new List<Personne>();
-            NpgsqlTransaction tran = null;
-            try
-            {
-                // Connect to a PostgreSQL database
-                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=49rkpFl0;Database=postgres;");
-                conn.Open();
-                tran = conn.BeginTransaction();
-                using (var cmd = new NpgsqlCommand("select \"BluRayTheque\".\"GetActeursByBRId\"(@brid, @cur)", conn))
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("brid", idBr);
-                    cmd.Parameters.Add(new NpgsqlParameter("@cur", NpgsqlTypes.NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "cur" });
-
-                    cmd.ExecuteNonQuery();
-
-                    cmd.CommandText = "fetch all in \"cur\"";
-                    cmd.CommandType = CommandType.Text;
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-
-                        // Output rows
-                        while (reader.Read())
-                            acteurs.Add(new Personne
-                            {
-                                Id = reader.GetInt32(0),
-                                Nom = reader.GetString(1),
-                                Prenom = reader.GetString(2),
-                                DateNaissance = reader.GetDateTime(3),
-                                Nationalite = reader.GetString(4),
-                            });
-                    }
-                }
-            }
-            finally
             {
                 if (conn != null)
                 {
