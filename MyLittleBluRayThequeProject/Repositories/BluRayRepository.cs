@@ -118,6 +118,7 @@ namespace MyLittleBluRayThequeProject.Repositories
                     bluRay.Id = long.Parse(dr[0].ToString());
                     bluRay.DateSortie = DateTime.Parse(dr[3].ToString());
                     bluRay.Titre = dr[1].ToString();
+                    Console.WriteLine(TimeSpan.FromMinutes(long.Parse(dr[2].ToString())));
                     bluRay.Duree = TimeSpan.FromMinutes(long.Parse(dr[2].ToString()));
                     bluRay.Version = dr[4].ToString();
                     bluRay.Disponible = Boolean.Parse(dr[7].ToString());

@@ -31,17 +31,22 @@ namespace MyLittleBluRayThequeProject.Controllers
 
         }
 
-        public IActionResult Index(long? id)
+        public IActionResult Index()
         {
             IndexViewModel model = new IndexViewModel();
+            HttpClient client = new HttpClient();
             model.BluRays = brRepository.GetListeBluRay();
-            if (id != null)
+
+            string apiPath = "https://localhost:7266/blurays/";
+            Task<string> responses = client.GetStringAsync(apiPath);
+            List<DTOs.BluRay> test = JsonConvert.DeserializeObject<List<DTOs.BluRay>>(responses.Result);
+            foreach (var br in test)
             {
-                model.SelectedBluRay = brBusiness.GetBluRay(id.Value);
-                model.SelectedBluRay.Acteurs = PersonneRepository.GetActeurs(id.Value);
-                model.SelectedBluRay.Realisateur = PersonneRepository.GetRealisateur(id.Value);
-                model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(id.Value);
+                Console.WriteLine(br.Titre);
             }
+            
+
+
             return View(model);
         }
 

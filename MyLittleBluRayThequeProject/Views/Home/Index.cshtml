@@ -33,8 +33,11 @@
                     <td>@br.Version</td>
                     <td>
                         <i class=""></i>
-                        <button type="button" class="btn btn-success"><i class="fas fa-shopping-basket"></i></button>
+                                @if (@br.Disponible)
+                                { 
                         <button type="button" class="btn btn-danger" onclick="location.href=''"><i class="far fa-trash-alt"></i></button>
+                                }
+                                <button type="button" class="btn btn-success"><i class="fas fa-shopping-basket"></i></button>
                     </td>
                     @{ i++; }
                 </tr>
