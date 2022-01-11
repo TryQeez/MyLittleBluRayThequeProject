@@ -36,16 +36,12 @@ namespace MyLittleBluRayThequeProject.Controllers
             IndexViewModel model = new IndexViewModel();
             HttpClient client = new HttpClient();
             model.BluRays = brRepository.GetListeBluRay();
-
-            string apiPath = "https://localhost:7266/blurays/";
-            Task<string> responses = client.GetStringAsync(apiPath);
-            List<DTOs.BluRay> test = JsonConvert.DeserializeObject<List<DTOs.BluRay>>(responses.Result);
-            foreach (var br in test)
+            foreach(var br in model.BluRays)
             {
-                Console.WriteLine(br.Titre);
+                br.Acteurs = PersonneRepository.GetActeurs(br.Id);
+                br.Scenariste = PersonneRepository.GetScenariste(br.Id);
+                br.Realisateur = PersonneRepository.GetRealisateur(br.Id);
             }
-            
-
 
             return View(model);
         }
@@ -63,23 +59,15 @@ namespace MyLittleBluRayThequeProject.Controllers
 
             
 
-            string apiPath = "https://localhost:7266/blurays/";
-
             string url = Request.Path;
             string[] urlSplit = url.Split('/');
             int idBr = int.Parse(urlSplit[urlSplit.Length - 1]);
 
-            string urlRequest = apiPath + idBr;
-
-
             
-            Task<string> responses = client.GetStringAsync(urlRequest);
-            DTOs.BluRay result = JsonConvert.DeserializeObject<DTOs.BluRay>(responses.Result);
-
-            model.SelectedBluRay = result;
-            model.SelectedBluRay.Acteurs = PersonneRepository.GetActeurs(result.Id);
-            model.SelectedBluRay.Realisateur = PersonneRepository.GetRealisateur(result.Id);
-            model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(result.Id);
+            model.SelectedBluRay = brRepository.GetBluRay(idBr);
+            model.SelectedBluRay.Acteurs = PersonneRepository.GetActeurs(idBr);
+            model.SelectedBluRay.Realisateur = PersonneRepository.GetRealisateur(idBr);
+            model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(idBr);
 
             return View(model);
         }
@@ -129,6 +117,27 @@ namespace MyLittleBluRayThequeProject.Controllers
                 personneRepository.enregistrerPersonne(personne);
             }
             return View();
+        }
+
+        public IActionResult DeleteBluray()
+        {
+            IndexViewModel model = new IndexViewModel();
+            string url = Request.Path;
+            string[] urlSplit = url.Split('/');
+            int idBr = int.Parse(urlSplit[urlSplit.Length - 1]);
+
+            brRepository.deleteBluray(idBr);
+
+            model.BluRays = brRepository.GetListeBluRay();
+            foreach (var br in model.BluRays)
+            {
+                br.Acteurs = PersonneRepository.GetActeurs(br.Id);
+                br.Scenariste = PersonneRepository.GetScenariste(br.Id);
+                br.Realisateur = PersonneRepository.GetRealisateur(br.Id);
+            }
+            
+            
+            return View("Index",model);
         }
 
 

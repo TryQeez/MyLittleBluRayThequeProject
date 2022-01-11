@@ -15,7 +15,10 @@
           <tr>
                 <th scope="col">Titre</th>
                 <th scope="col">Date de sortie</th>
+                <th scope="col">Scénariste</th>
+                <th scope="col">Réalisateur</th>
                 <th scope="col">Version</th>
+                <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -24,15 +27,17 @@
             {
                 <tr>
                     <td><a asp-area="" asp-controller="Home" asp-action="SelectedBluRay" asp-route-id="@br.Id">@br.Titre</a></td>
-                    <td>@br.DateSortie</td>
+                    <td>@br.DateSortie.Date.ToString("dd/MM/yyyy")</td>
+                    <td>@br.Scenariste.Nom</td>
+                    <td>@br.Realisateur.Nom</td>
                     <td>@br.Version</td>
                     <td>
                         <i class=""></i>
                                 @if (@br.Disponible)
-                                { 
-                        <button type="button" class="btn btn-danger" onclick="location.href=''"><i class="far fa-trash-alt"></i></button>
+                                {
+                                    <a asp-controller="Home" asp-action="DeleteBluray" asp-route-id="@br.Id" class="link-danger">DELETE</a>
                                 }
-                                <button type="button" class="btn btn-success"><i class="fas fa-shopping-basket"></i></button>
+                        
                     </td>
                     @{ i++; }
                 </tr>
@@ -42,7 +47,3 @@
     </div>
   </div>
 </div>
-
-
-
-
