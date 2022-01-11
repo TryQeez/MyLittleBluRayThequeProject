@@ -56,6 +56,7 @@ namespace MyLittleBluRayThequeProject.Repositories
             return allBluRays;
         }
 
+        
         public void SetBluRayEmprunte(long id)
         {
             NpgsqlConnection conn = null;
@@ -81,6 +82,32 @@ namespace MyLittleBluRayThequeProject.Repositories
             } finally
             {
                 if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        public void SetBluRayRendu(long id)
+        {
+            NpgsqlConnection conn = null;
+            BluRay br = GetBluRay(id);
+            if(br == null || br.Disponible == true || br.Emprunt == false)
+            {
+                return;
+            }
+
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand command = new NpgsqlCommand("UPDATE \"BluRayTheque\".\"BluRay\" SET \"Emprunt\" = False, \"Disponible\" = True WHERE \"Id\" = @p", conn);
+                command.Parameters.AddWithValue("p", id);
+                command.ExecuteNonQuery ();
+            } finally
+            {
+                if(conn != null)
                 {
                     conn.Close();
                 }
