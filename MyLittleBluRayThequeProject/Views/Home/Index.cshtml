@@ -13,11 +13,8 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-                <th scope="col">Numéro</th>
                 <th scope="col">Titre</th>
                 <th scope="col">Date de sortie</th>
-                <th scope="col">Scénariste</th>
-                <th scope="col">Réalisateur</th>
                 <th scope="col">Version</th>
           </tr>
         </thead>
@@ -28,8 +25,6 @@
                 <tr>
                     <td><a asp-area="" asp-controller="Home" asp-action="SelectedBluRay" asp-route-id="@br.Id">@br.Titre</a></td>
                     <td>@br.DateSortie</td>
-                    <td>@br.Scenariste.Nom</td>
-                    <td>@br.Realisateur.Nom</td>
                     <td>@br.Version</td>
                     <td>
                         <i class=""></i>
