@@ -2,9 +2,13 @@
 using MyLittleBluRayThequeProject.Models;
 using MyLittleBluRayThequeProject.Business;
 using MyLittleBluRayThequeProject.Repositories;
-using System.Web;
+
+
 
 using System.Diagnostics;
+using System.Net;
+using Newtonsoft.Json;
+
 
 namespace MyLittleBluRayThequeProject.Controllers
 {
@@ -24,6 +28,7 @@ namespace MyLittleBluRayThequeProject.Controllers
             brRepository = new BluRayRepository();
             personneRepository = new PersonneRepository();
             brBusiness = new BluRayBusiness();
+
         }
 
         public IActionResult Index(long? id)
@@ -33,6 +38,9 @@ namespace MyLittleBluRayThequeProject.Controllers
             if (id != null)
             {
                 model.SelectedBluRay = brBusiness.GetBluRay(id.Value);
+                model.SelectedBluRay.Acteurs = PersonneRepository.GetActeurs(id.Value);
+                model.SelectedBluRay.Realisateur = PersonneRepository.GetRealisateur(id.Value);
+                model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(id.Value);
             }
             return View(model);
         }
@@ -45,11 +53,29 @@ namespace MyLittleBluRayThequeProject.Controllers
 
         public IActionResult SelectedBluRay()
         {
+            IndexViewModel model = new IndexViewModel();
+            HttpClient client = new HttpClient();
+
+            
+
+            string apiPath = "https://localhost:7266/blurays/";
+
             string url = Request.Path;
             string[] urlSplit = url.Split('/');
             int idBr = int.Parse(urlSplit[urlSplit.Length - 1]);
-            IndexViewModel model = new IndexViewModel();
-            model.SelectedBluRay = brRepository.GetBluRay(idBr);
+
+            string urlRequest = apiPath + idBr;
+
+
+            
+            Task<string> responses = client.GetStringAsync(urlRequest);
+            DTOs.BluRay result = JsonConvert.DeserializeObject<DTOs.BluRay>(responses.Result);
+
+            model.SelectedBluRay = result;
+            model.SelectedBluRay.Acteurs = PersonneRepository.GetActeurs(result.Id);
+            model.SelectedBluRay.Realisateur = PersonneRepository.GetRealisateur(result.Id);
+            model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(result.Id);
+
             return View(model);
         }
 

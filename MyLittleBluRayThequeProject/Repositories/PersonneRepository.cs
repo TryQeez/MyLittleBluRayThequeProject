@@ -199,7 +199,7 @@ namespace MyLittleBluRayThequeProject.Repositories
                 conn = new NpgsqlConnection(PersonneRepository.ConnectionString);
                 conn.Open();
 
-                string acteursRequest = "SELECT * FROM \"BluRayTheque\".\"Personne\", \"BluRayTheque\".\"BluRay\",\"BluRayTheque\".\"Acteur\"  where \"BluRayTheque\".\"BluRay\".\"Id\"=" + idBr + " and \"BluRayTheque\".\"Acteur\".\"IdBluRay\"=" + idBr + " and \"BluRayTheque\".\"Acteur\".\"IdActeur\" = \"BluRayTheque\".\"Personne\".\"Id\"";
+                string acteursRequest = "SELECT* FROM \"BluRayTheque\".\"Personne\", \"BluRayTheque\".\"BluRay\",\"BluRayTheque\".\"Acteur\" where \"BluRayTheque\".\"BluRay\".\"Id\"=" + idBr +" and \"BluRayTheque\".\"Acteur\".\"IdBluRay\"=" + idBr +" and \"BluRayTheque\".\"Acteur\".\"IdActeur\" = \"BluRayTheque\".\"Personne\".\"Id\"";
 
                 NpgsqlCommand command = new NpgsqlCommand(acteursRequest, conn);
                 NpgsqlDataReader dr = command.ExecuteReader();
