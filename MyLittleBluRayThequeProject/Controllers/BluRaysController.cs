@@ -48,5 +48,14 @@ namespace MyLittleBluRayThequeProject.Controllers
             // Passer le livre en emprunté = true et disponible = false
             return new CreatedResult($"{idBluray}", null);
         }
+
+        [HttpDelete("/blurays/{idBluray}/emprunt")]
+        public ObjectResult RenduBluRay(long idBluRay)
+        {
+            // On rend le bluray
+            _brRepository.SetBluRayRendu(idBluRay);
+
+            return new CreatedResult($"{idBluRay}", null);
+        }
     }
 }
