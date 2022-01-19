@@ -22,6 +22,12 @@ namespace MyLittleBluRayThequeProject.Controllers
         public ObjectResult Get()
         {
             List<BluRay> br = _brRepository.GetListeBluRay();
+            foreach(BluRay brItem in br)
+            {
+                brItem.Realisateur = PersonneRepository.GetRealisateur(brItem.Id);
+                brItem.Scenariste = PersonneRepository.GetScenariste(brItem.Id);
+                brItem.Acteurs = PersonneRepository.GetActeurs(brItem.Id);
+            }
             List<InfoBluRayApiViewModel> bluRays = br.ConvertAll(InfoBluRayApiViewModel.ToModel);
             return new OkObjectResult(bluRays);
         }

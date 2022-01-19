@@ -50,23 +50,15 @@ namespace MyLittleBluRayThequeProject.Controllers
 
 
 
-            string apiPath = "https://localhost:7266/blurays";
-
             string url = Request.Path;
             string[] urlSplit = url.Split('/');
             int idBr = int.Parse(urlSplit[urlSplit.Length - 1]);
 
-            string urlRequest = apiPath + idBr;
 
-
-
-            Task<string> responses = client.GetStringAsync(urlRequest);
-            DTOs.BluRay result = JsonConvert.DeserializeObject<DTOs.BluRay>(responses.Result);
-
-            model.SelectedBluRay = result;
-            model.SelectedBluRay.Acteurs = PersonneRepository.GetActeurs(result.Id);
-            model.SelectedBluRay.Realisateur = PersonneRepository.GetRealisateur(result.Id);
-            model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(result.Id);
+            model.SelectedBluRay = brRepository.GetBluRay(idBr);
+            model.SelectedBluRay.Acteurs = PersonneRepository.GetActeurs(idBr);
+            model.SelectedBluRay.Realisateur = PersonneRepository.GetRealisateur(idBr);
+            model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(idBr);
 
             return View(model);
         }
@@ -76,12 +68,11 @@ namespace MyLittleBluRayThequeProject.Controllers
             IndexViewModel model = new IndexViewModel();
             if(url != null)
             {
-                
-                string apiPath = "https://localhost:7266/blurays";
                 CookieOptions option = new CookieOptions();
                     option.Expires = DateTime.Now.AddMinutes(15);
-                Response.Cookies.Append("url", apiPath, option);
-                model.BluRays = FetchDataFromExternalAPI(apiPath);
+                string buildURL = "https://" + url + "/blurays";
+                Response.Cookies.Append("url", buildURL, option);
+                model.ExternalBluRays = FetchDataFromExternalAPI(buildURL);
             }
             return View(model);
         }
@@ -101,23 +92,35 @@ namespace MyLittleBluRayThequeProject.Controllers
             HttpClient client = new HttpClient();
             string urlFromCookies = Request.Cookies["url"] + "/" + idBr;
             Task<string> responses = client.GetStringAsync(urlFromCookies);
-            DTOs.BluRay bluRayEmprunt = JsonConvert.DeserializeObject<DTOs.BluRay>(responses.Result);
+            DTOs.ExternalBluRay bluRayEmprunt = JsonConvert.DeserializeObject<DTOs.ExternalBluRay>(responses.Result);
 
-            
-            brRepository.enregistrerBluRay(bluRayEmprunt);
+
+            DTOs.BluRay builtBR = new DTOs.BluRay();
+            builtBR.Id = bluRayEmprunt.Id;
+            builtBR.Titre = bluRayEmprunt.Titre;
+            builtBR.Version = bluRayEmprunt.Version;
+            builtBR.Disponible = bluRayEmprunt.Disponible;
+            builtBR.Duree = bluRayEmprunt.Duree;
+            builtBR.DateSortie = bluRayEmprunt.DateSortie;
+
+            brRepository.enregistrerBluRay(builtBR);
             brRepository.setProprietaire(idBr, Request.Cookies["url"]);
 
-            EmprunterBluRayExterne(idBr);
+            string urlEmprunt = Request.Cookies["url"] + "/" + idBr + "/emprunt";
+            client.PostAsync(urlEmprunt, null);
 
             return View("RecupererAPIExterne", model);
         }
 
-        [HttpPost]
-        private ObjectResult EmprunterBluRayExterne(long idBr)
+        private IActionResult RenduRequete(long idBr)
         {
+            IndexViewModel model = new IndexViewModel();
+            HttpClient client = new HttpClient();
             string url = Request.Cookies["url"] + "/" + idBr + "/emprunt";
-
-            return new CreatedResult($"{idBr}", null);
+            client.DeleteAsync(url);
+            brRepository.deleteBluray((int) idBr);
+            model.BluRays = brRepository.GetListeBluRay();
+            return View(model);
         }
 
         public IActionResult EnregistrerBluRay(string titre, string version, List<int> acteur, int realisateur, int scenariste, DateTime date, int duree)
@@ -195,11 +198,11 @@ namespace MyLittleBluRayThequeProject.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private List<DTOs.BluRay> FetchDataFromExternalAPI(string url)
+        private List<DTOs.ExternalBluRay> FetchDataFromExternalAPI(string url)
         {
             HttpClient client = new HttpClient();
             Task<string> responses = client.GetStringAsync(url);
-            List<DTOs.BluRay> fetchedBRs = JsonConvert.DeserializeObject<List<DTOs.BluRay>>(responses.Result);
+            List<DTOs.ExternalBluRay> fetchedBRs = JsonConvert.DeserializeObject<List<DTOs.ExternalBluRay>>(responses.Result);
             return fetchedBRs;
         }
 

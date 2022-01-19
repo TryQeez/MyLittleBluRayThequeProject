@@ -38,9 +38,12 @@ namespace MyLittleBluRayThequeProject.Models
             {
                 return null;
             }
-            foreach(var acteur in dto.Acteurs)
+            if(dto.Acteurs != null)
             {
-                acteurList.Add(acteur.Nom+" "+acteur.Prenom);
+                foreach (var acteur in dto.Acteurs)
+                {
+                    acteurList.Add(acteur.Nom + " " + acteur.Prenom);
+                }
             }
             return new InfoBluRayApiViewModel { Id = dto.Id, Titre = dto.Titre, DateSortie = dto.DateSortie, Version = dto.Version, Disponible = dto.Disponible, Duree = dto.Duree, Realisateur = dto.Realisateur.Nom +" "+ dto.Realisateur.Prenom, Scenariste = dto.Scenariste.Nom +" "+dto.Scenariste.Prenom, Acteur = acteurList };
         }

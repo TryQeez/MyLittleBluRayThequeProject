@@ -18,7 +18,7 @@
             <input type="submit" value="Terminé" class="submit" />
           </div>
 </form>
-@if(Model.BluRays != null)
+@if(Model.ExternalBluRays != null)
 {
     <div class="container">
     <div class="row">
@@ -33,7 +33,7 @@
         </thead>
         <tbody>
             @{int i = 0;}
-            @foreach (var br in Model?.BluRays)
+            @foreach (var br in Model?.ExternalBluRays)
             {
                             @if(br.Disponible)
                             {
