@@ -32,6 +32,12 @@ namespace MyLittleBluRayThequeProject.Controllers
             IndexViewModel model = new IndexViewModel();
             HttpClient client = new HttpClient();
             model.BluRays = brRepository.GetListeBluRay();
+            foreach(var br in model.BluRays)
+            {
+                br.Acteurs = PersonneRepository.GetActeurs(br.Id);
+                br.Scenariste = PersonneRepository.GetScenariste(br.Id);
+                br.Realisateur = PersonneRepository.GetRealisateur(br.Id);
+            }
 
             return View(model);
         }
@@ -50,8 +56,11 @@ namespace MyLittleBluRayThequeProject.Controllers
             string[] urlSplit = url.Split('/');
             int idBr = int.Parse(urlSplit[urlSplit.Length - 1]);
 
-            string urlRequest = apiPath + idBr;
-
+            
+            model.SelectedBluRay = brRepository.GetBluRay(idBr);
+            model.SelectedBluRay.Acteurs = PersonneRepository.GetActeurs(idBr);
+            model.SelectedBluRay.Realisateur = PersonneRepository.GetRealisateur(idBr);
+            model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(idBr);
 
             
             Task<string> responses = client.GetStringAsync(urlRequest);
@@ -159,6 +168,27 @@ namespace MyLittleBluRayThequeProject.Controllers
                 personneRepository.enregistrerPersonne(personne);
             }
             return View();
+        }
+
+        public IActionResult DeleteBluray()
+        {
+            IndexViewModel model = new IndexViewModel();
+            string url = Request.Path;
+            string[] urlSplit = url.Split('/');
+            int idBr = int.Parse(urlSplit[urlSplit.Length - 1]);
+
+            brRepository.deleteBluray(idBr);
+
+            model.BluRays = brRepository.GetListeBluRay();
+            foreach (var br in model.BluRays)
+            {
+                br.Acteurs = PersonneRepository.GetActeurs(br.Id);
+                br.Scenariste = PersonneRepository.GetScenariste(br.Id);
+                br.Realisateur = PersonneRepository.GetRealisateur(br.Id);
+            }
+            
+            
+            return View("Index",model);
         }
 
 

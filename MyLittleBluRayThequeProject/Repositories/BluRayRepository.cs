@@ -135,6 +135,35 @@ namespace MyLittleBluRayThequeProject.Repositories
             }
         }
 
+        public void deleteBluray(int id)
+        {
+            NpgsqlConnection conn = null;
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand delete = new NpgsqlCommand("DELETE FROM \"BluRayTheque\".\"Acteur\" WHERE \"IdBluRay\" = "+id, conn);
+                delete.ExecuteNonQuery();
+                delete = new NpgsqlCommand("DELETE FROM \"BluRayTheque\".\"Realisateur\" WHERE \"IdBluRay\" = " + id, conn);
+                delete.ExecuteNonQuery();
+                delete = new NpgsqlCommand("DELETE FROM \"BluRayTheque\".\"Scenariste\" WHERE \"IdBluRay\" = " + id, conn);
+                delete.ExecuteNonQuery();
+                delete = new NpgsqlCommand("DELETE FROM \"BluRayTheque\".\"BluRay\" WHERE \"Id\" = " + id, conn);
+                delete.ExecuteNonQuery();
+
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+
+        }
+        
+
         /// <summary>
         /// Récupération d'un BR par son Id
         /// </summary>
