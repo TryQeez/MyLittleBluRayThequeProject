@@ -40,6 +40,7 @@ namespace MyLittleBluRayThequeProject.Repositories
                     bluRay.Version = dr[4].ToString();
                     bluRay.Disponible = Boolean.Parse(dr[7].ToString());
                     bluRay.Emprunt = Boolean.Parse(dr[5].ToString());
+                    bluRay.Proprietaire = dr[6].ToString();
                     allBluRays.Add(bluRay);
 
                 }
@@ -87,6 +88,27 @@ namespace MyLittleBluRayThequeProject.Repositories
             }
         }
 
+        public void setProprietaire(int idBr, string ipProprio)
+        {
+            NpgsqlConnection conn = null;
+            try
+            {
+                conn = new NpgsqlConnection("Server=127.0.0.1;User Id=postgres;Password=root;Database=postgres;");
+                conn.Open();
+
+                NpgsqlCommand sendNewUserCommand = new NpgsqlCommand("UPDATE \"BluRayTheque\".\"BluRay\" set \"Proprietaire\" = @ip WHERE \"ID\" = " + idBr);
+                sendNewUserCommand.Parameters.AddWithValue("ip", ipProprio);
+                sendNewUserCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
         public void SetBluRayRendu(long id)
         {
             NpgsqlConnection conn = null;
@@ -112,7 +134,6 @@ namespace MyLittleBluRayThequeProject.Repositories
                 }
             }
         }
-        
 
         /// <summary>
         /// Récupération d'un BR par son Id

@@ -59,6 +59,6 @@
 
         public bool Emprunt { get; set; }
 
-        public Personne Proprietaire { get; set; }
+        public string Proprietaire { get; set; }
     }
 }

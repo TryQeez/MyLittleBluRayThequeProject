@@ -2,11 +2,7 @@
 using MyLittleBluRayThequeProject.Models;
 using MyLittleBluRayThequeProject.Business;
 using MyLittleBluRayThequeProject.Repositories;
-
-
-
 using System.Diagnostics;
-using System.Net;
 using Newtonsoft.Json;
 
 
@@ -37,24 +33,9 @@ namespace MyLittleBluRayThequeProject.Controllers
             HttpClient client = new HttpClient();
             model.BluRays = brRepository.GetListeBluRay();
 
-            string apiPath = "https://localhost:7266/blurays/";
-            Task<string> responses = client.GetStringAsync(apiPath);
-            List<DTOs.BluRay> test = JsonConvert.DeserializeObject<List<DTOs.BluRay>>(responses.Result);
-            foreach (var br in test)
-            {
-                Console.WriteLine(br.Titre);
-            }
-            
-
-
             return View(model);
         }
 
-        public ActionResult PrintMessageToConsole()
-        {
-            Console.WriteLine("Test");
-            return View("Index");
-        }
 
         public IActionResult SelectedBluRay()
         {
@@ -63,7 +44,7 @@ namespace MyLittleBluRayThequeProject.Controllers
 
             
 
-            string apiPath = "https://localhost:7266/blurays/";
+            string apiPath = "https://localhost:7266/blurays";
 
             string url = Request.Path;
             string[] urlSplit = url.Split('/');
@@ -82,6 +63,55 @@ namespace MyLittleBluRayThequeProject.Controllers
             model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(result.Id);
 
             return View(model);
+        }
+
+        public IActionResult RecupererAPIExterne(string url)
+        {
+            IndexViewModel model = new IndexViewModel();
+            if(url != null)
+            {
+                
+                string apiPath = "https://localhost:7266/blurays";
+                CookieOptions option = new CookieOptions();
+                    option.Expires = DateTime.Now.AddMinutes(15);
+                Response.Cookies.Append("url", apiPath, option);
+                model.BluRays = FetchDataFromExternalAPI(apiPath);
+            }
+            return View(model);
+        }
+
+        public IActionResult RenduBluRay()
+        {
+            return View();
+        }
+
+        public IActionResult EmprunterBluRayExterne()
+        {
+            IndexViewModel model = new IndexViewModel();
+            string url = Request.Path;
+            string[] urlSplit = url.Split('/');
+            int idBr = int.Parse(urlSplit[urlSplit.Length - 1]);
+
+            HttpClient client = new HttpClient();
+            string urlFromCookies = Request.Cookies["url"] + "/" + idBr;
+            Task<string> responses = client.GetStringAsync(urlFromCookies);
+            DTOs.BluRay bluRayEmprunt = JsonConvert.DeserializeObject<DTOs.BluRay>(responses.Result);
+
+            
+            brRepository.enregistrerBluRay(bluRayEmprunt);
+            brRepository.setProprietaire(idBr, Request.Cookies["url"]);
+
+            EmprunterBluRayExterne(idBr);
+
+            return View("RecupererAPIExterne", model);
+        }
+
+        [HttpPost]
+        private ObjectResult EmprunterBluRayExterne(long idBr)
+        {
+            string url = Request.Cookies["url"] + "/" + idBr + "/emprunt";
+
+            return new CreatedResult($"{idBr}", null);
         }
 
         public IActionResult EnregistrerBluRay(string titre, string version, List<int> acteur, int realisateur, int scenariste, DateTime date, int duree)
@@ -136,6 +166,14 @@ namespace MyLittleBluRayThequeProject.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private List<DTOs.BluRay> FetchDataFromExternalAPI(string url)
+        {
+            HttpClient client = new HttpClient();
+            Task<string> responses = client.GetStringAsync(url);
+            List<DTOs.BluRay> fetchedBRs = JsonConvert.DeserializeObject<List<DTOs.BluRay>>(responses.Result);
+            return fetchedBRs;
         }
 
         
