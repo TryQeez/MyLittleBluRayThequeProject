@@ -48,7 +48,7 @@ namespace MyLittleBluRayThequeProject.Controllers
             IndexViewModel model = new IndexViewModel();
             HttpClient client = new HttpClient();
 
-            
+
 
             string apiPath = "https://localhost:7266/blurays";
 
@@ -56,13 +56,10 @@ namespace MyLittleBluRayThequeProject.Controllers
             string[] urlSplit = url.Split('/');
             int idBr = int.Parse(urlSplit[urlSplit.Length - 1]);
 
-            
-            model.SelectedBluRay = brRepository.GetBluRay(idBr);
-            model.SelectedBluRay.Acteurs = PersonneRepository.GetActeurs(idBr);
-            model.SelectedBluRay.Realisateur = PersonneRepository.GetRealisateur(idBr);
-            model.SelectedBluRay.Scenariste = PersonneRepository.GetScenariste(idBr);
+            string urlRequest = apiPath + idBr;
 
-            
+
+
             Task<string> responses = client.GetStringAsync(urlRequest);
             DTOs.BluRay result = JsonConvert.DeserializeObject<DTOs.BluRay>(responses.Result);
 
